@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "control.h"
 
-void INThandler(int);
+void sigHandler(int);
 
 int main(void) {
 	Conn c = serial_init(getenv("SERIAL_PORT"), BAUD_RATE);
@@ -17,13 +17,14 @@ int main(void) {
 
 	printf("on\n");
 
-	signal(SIGINT, INThandler);
+	signal(SIGBREAK, sigHandler);
+	signal(SIGINT, sigHandler);
 	while (1)
 		wait();
 	return 0;
 }
 
-void INThandler(int sig) {
+void sigHandler(int sig) {
 	Conn c = serial_init(getenv("SERIAL_PORT"), BAUD_RATE);
 	if(bad_init(c)) {
 		printf("Can't connect to serial device (shutdown)\n");
