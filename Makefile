@@ -6,6 +6,8 @@ ifeq "$(OS)" "Windows_NT"
 	LIB_SUFFIX = windows
 	RM = del
 	RM_ARGS = 
+	GEN_RES_GC = windres icon.rc -O coff -o icon.res
+	RES_GC = icon.res
 else
 	UNAME_S := $(shell uname -s)
 	ifeq "$(UNAME_S)" "Linux"
@@ -13,6 +15,8 @@ else
 	LIB_SUFFIX = unix
 	RM = rm
 	RM_ARGS = -rf
+	GEN_RES_GC = 
+	RES_GC = 
 	endif
 endif
 
@@ -23,7 +27,8 @@ control-rgb: control-rgb.o lib-$(LIB_SUFFIX).o
 	$(CC) -o $@$(EXE_SUFFIX) $^
 
 control-gc: control-gc.o lib-$(LIB_SUFFIX).o
-	$(CC) -o $@$(EXE_SUFFIX) $^
+	$(GEN_RES_GC)
+	$(CC) -o $@$(EXE_SUFFIX) $^ $(RES_GC)
 
 rmo:
 	$(RM) $(RM_ARGS) *.o

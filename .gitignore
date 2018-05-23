@@ -54,3 +54,4 @@ dkms.conf
 # hey
 control-rgb
 control-gc
+*.res
