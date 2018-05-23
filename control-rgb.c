@@ -1,20 +1,10 @@
+#include "control.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-typedef struct profile_data {
-	unsigned char 	r;
-	unsigned char 	g;
-	unsigned char 	b;
-} Profile;
-
-typedef struct profile_tracker {
-	Profile* 		list;
-	unsigned int 	size;
-	unsigned int 	current;
-} Profiles;
 
 Profiles* read_profiles() {
 	// open profiles file
@@ -44,8 +34,8 @@ Profiles* read_profiles() {
 
 	// read all the profiles
 	for(int i = 0; i < profiles->size; i++) {
-		result = fscanf(fp, "%hhu %hhu %hhu\n", &profiles->list[i].r, &profiles->list[i].g, &profiles->list[i].b);
-		if(result != 3) {
+		result = fscanf(fp, "%hhu %hhu %hhu %hhu\n", &profiles->list[i].r, &profiles->list[i].g, &profiles->list[i].b, &profiles->list[i].type);
+		if(result != 4) {
 			printf("Improper formatting in profiles file\n");
 			return NULL;
 		}
@@ -62,7 +52,7 @@ int save_profiles(Profiles* profiles) {
 
 	fprintf(fp, "%u %u\n", profiles->size, profiles->current);
 	for(int i = 0; i < profiles->size; i++) {
-		fprintf(fp, "%hhu %hhu %hhu\n", profiles->list[i].r, profiles->list[i].g, profiles->list[i].b);
+		fprintf(fp, "%hhu %hhu %hhu %hhu\n", profiles->list[i].r, profiles->list[i].g, profiles->list[i].b, profiles->list[i].type);
 	}
 
 	fclose(fp);
@@ -80,6 +70,7 @@ int add_profile(Profiles* profiles) {
 	profiles->list[profiles->current].r = rand();
 	profiles->list[profiles->current].g = rand();
 	profiles->list[profiles->current].b = rand();
+	profiles->list[profiles->current].type = STATIC;
 	return 0;
 }
 
@@ -125,7 +116,7 @@ void shutdown(Profiles* profiles) {
 		printf("Profile dump:\n");
 		printf("%u %u\n", profiles->size, profiles->current);
 		for(int i = 0; i < profiles->size; i++) {
-			printf("%hhu %hhu %hhu\n", profiles->list[i].r, profiles->list[i].g, profiles->list[i].b);
+			printf("%hhu %hhu %hhu %hhu\n", profiles->list[i].r, profiles->list[i].g, profiles->list[i].b, profiles->list[i].type);
 		}
 	}
 	free(profiles->list);

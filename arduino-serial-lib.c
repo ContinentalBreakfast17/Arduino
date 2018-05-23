@@ -4,7 +4,7 @@
 // 2006-2013, Tod E. Kurt, http://todbot.com/blog/
 //
 
-#include "arduino-serial-lib.h"
+#include "control.h"
 
 #include <stdio.h>    // Standard input/output definitions 
 #include <unistd.h>   // UNIX standard function definitions 
