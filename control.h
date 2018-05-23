@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#define BUFFER_SZ 128
 #define STATIC 0
 
 typedef union connection {

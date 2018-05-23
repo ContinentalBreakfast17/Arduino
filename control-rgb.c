@@ -157,8 +157,8 @@ int main(int argc, char** argv) {
 	Profile profile;
 	char* line = NULL;
 	size_t line_size = 0;
-	int quit = 0, error = 0, save = 0, n = 0;
-	while(!quit) {
+	int error = 0, save = 0, n = 0;
+	while(1) {
 		if(save > 3) {
 			save_profiles(profiles);
 			save = 0;
@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
 		line[n-1] = 0;
 		
 		if(strcmp(line, "quit") == 0 || strcmp(line, "exit") == 0) {
-			quit = 1;
+			break;
 		} else if(strcmp(line, "add") == 0) {
 			error = add_profile(profiles);
 		} else if(strcmp(line, "switch") == 0) {

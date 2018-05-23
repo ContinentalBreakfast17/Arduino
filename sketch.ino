@@ -23,25 +23,19 @@ int next_ws(char* s) {
 
 void loop() {
   if(Serial.available() > 0) {
-    int n = 0;
-    while((buffer[n++] = Serial.read()) != '\n');
-    if(n >= 128) return;
+    int n = Serial.readBytesUntil('\n', buffer, BUFFER_SIZE-1);
+    if(n <= 0) return;
     buffer[n] = 0;
     Serial.print(buffer);
 
     // static color, currently all that is supported
     if(buffer[0] == '0') {
       buffer += 2;
-      int pin = START_RGB_PIN;
       int i;
-      while((i = next_ws(buffer)) > 0 && pin < START_RGB_PIN + 3) {
-        int j = i;
-        char val_str[i+1];
-        while(j--) val_str[j] = buffer[j];
-        val_str[i] = 0;
-        analogWrite(pin, atoi(val_str));
-
-        buffer += i;
+      unsigned char vals[3];
+      sscanf(buffer, "%hhu %hhu %hhu", &vals[0], &vals[1], &vals[2]);
+      for(i = START_RGB_PIN; i < START_RGB_PIN + 3; i++) {
+        analogWrite(i, vals[i-START_RGB_PIN]);
       }
     } else if(strcmp(buffer, "on") == 0) {
         analogWrite(GC_PIN, HIGH);
