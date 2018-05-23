@@ -19,7 +19,7 @@ int main(void) {
 
 	signal(SIGINT, INThandler);
 	while (1)
-		pause();
+		wait();
 	return 0;
 }
 

@@ -37,5 +37,6 @@ int bad_init(Conn c);
 int serial_close(Conn c);
 int serial_write(Conn c, char* str);
 int serial_write_profile(Conn c, Profile profile);
+void wait();
 
 #endif

@@ -135,3 +135,7 @@ int serial_write_profile(Conn c, Profile profile) {
     }
     return 0;
 }
+
+void wait() {
+    pause();
+}
