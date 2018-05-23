@@ -123,7 +123,8 @@ int serial_write(Conn c, char* str)
         perror("serial_write: couldn't write whole string\n");
         return -1;
     }
-    return serial_read(c);
+    //return serial_read(c);
+    return 0;
 }
 
 int serial_write_profile(Conn c, Profile profile) {

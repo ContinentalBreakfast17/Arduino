@@ -26,7 +26,7 @@ void loop() {
     int n = Serial.readBytesUntil('\n', buffer, BUFFER_SIZE-1);
     if(n <= 0) return;
     buffer[n] = 0;
-    Serial.print(buffer);
+    //Serial.print(buffer);
 
     // static color, currently all that is supported
     if(buffer[0] == '0') {

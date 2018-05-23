@@ -57,7 +57,8 @@ int serial_write(Conn c, char* str) {
 	DWORD length;
 	if(!WriteFile(c.h, str, strlen(str), &length, NULL))
 		return 1;
-	return serial_read(c);
+	//return serial_read(c);
+	return 0;
 }
 
 int serial_write_profile(Conn c, Profile profile) {
