@@ -5,8 +5,10 @@
 //
 
 
-#ifndef __ARDUINO_SERIAL_LIB_H__
-#define __ARDUINO_SERIAL_LIB_H__
+#ifndef __CONTROL_H__
+#define __CONTROL_H__
+
+#include <stdint.h>
 
 #define STATIC 0
 
@@ -23,10 +25,10 @@ typedef struct profile_tracker {
 	unsigned int 	current;
 } Profiles;
 
-/*int serial_init(const char* serialport, int baud);
+int serial_init(char* serialport, int baud);
 int serial_close(int fd);
-int serial_write(int fd, const char* str);
-int serial_writeprofile(int fd, Profile profile)
+int serial_write(int fd, char* str);
+int serial_write_profile(int fd, Profile profile);
 int serial_flush(int fd);
-*/
+
 #endif

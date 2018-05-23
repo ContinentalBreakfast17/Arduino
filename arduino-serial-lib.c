@@ -21,7 +21,7 @@
 // and a baud rate (bps) and connects to that port at that speed and 8N1.
 // opens the port in fully raw mode so you can send binary data.
 // returns valid fd, or -1 on error
-int serial_init(const char* serialport, int baud)
+int serial_init(char* serialport, int baud)
 {
     struct termios toptions;
     int fd;
@@ -90,14 +90,27 @@ int serial_init(const char* serialport, int baud)
     return fd;
 }
 
-//
 int serial_close(int fd)
 {
     return close(fd);
 }
 
-//
-int serial_write(int fd, const char* str)
+// reads until newline or 128 characters
+int serial_read(int fd) {
+    char buffer[128];
+    int n = 0;
+    while(n < 128) {
+        int nread  = read(fd, buffer+n, 1);
+        if(nread < 1)
+            return 0;
+        if(buffer[n] == '\n')
+            return 0;
+        n += nread;
+    }
+    return 1;
+}
+
+int serial_write(int fd, char* str)
 {
     int len = strlen(str);
     int n = write(fd, str, len);
@@ -105,10 +118,20 @@ int serial_write(int fd, const char* str)
         perror("serial_write: couldn't write whole string\n");
         return -1;
     }
+    if(n = serial_flush(fd)) return n;
+    return serial_read(fd);
+}
+
+int serial_write_profile(int fd, Profile profile) {
+    if(profile.type == STATIC) {
+        char buffer[16];
+        memset(buffer, 0, 16);
+        sprintf(buffer, "%d %hhu %hhu %hhu\n", STATIC, profile.r, profile.g, profile.b);
+        return serial_write(fd, buffer);
+    }
     return 0;
 }
 
-//
 int serial_flush(int fd)
 {
     sleep(2); //required to make flush work, for some reason

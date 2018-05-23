@@ -1,10 +1,16 @@
-#include "control.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "control.h"
 
+#define READ_ERROR 		1
+#define INIT_ERROR 		2
+#define ADD_ERROR		3
+#define GET_LINE_ERROR 	4
+#define SERIAL_PORT 	"poop"
+#define BAUD_RATE		9600
 
 Profiles* read_profiles() {
 	// open profiles file
@@ -63,7 +69,7 @@ int add_profile(Profiles* profiles) {
 	profiles->list = (Profile*)realloc(profiles->list, profiles->size*sizeof(Profile));
 	if(profiles->list == NULL) {
 		printf("Failed to reallocate profiles list: %s\n", strerror(errno));
-		return 1;
+		return ADD_ERROR;
 	}
 
 	profiles->current = profiles->size - 1;
@@ -123,11 +129,25 @@ void shutdown(Profiles* profiles) {
 	free(profiles);
 }
 
+void check_arduino(int n) {
+	if(n) {
+		printf("Arduino may be disconnected\n");
+	}
+}
+
 int main(int argc, char** argv) {
 	Profiles* profiles = read_profiles();
-	if(profiles == NULL) exit(-1);
+	if(profiles == NULL) exit(READ_ERROR);
+
+	int fd = serial_init(SERIAL_PORT, BAUD_RATE);
+	if(fd == -1) {
+		printf("Can't connect to serial device\n");
+		shutdown(profiles);
+		return INIT_ERROR;
+	}
+
 	if(argc >= 2 && strcmp(argv[1], "init") == 0) {
-		// send to arduino
+		check_arduino(serial_write_profile(fd, profiles->list[profiles->current]));
 		shutdown(profiles);
 		return 0;
 	}
@@ -151,7 +171,7 @@ int main(int argc, char** argv) {
 		if(n < 0) {
 			free(line);
 			shutdown(profiles);
-			return 2;
+			return GET_LINE_ERROR;
 		}
 		line[n-1] = 0;
 		
@@ -173,7 +193,7 @@ int main(int argc, char** argv) {
 			return error;
 		}
 
-		// send to arduino and check for errors
+		check_arduino(serial_write_profile(fd, profiles->list[profiles->current]));
 		printf("\n");
 	}
 
