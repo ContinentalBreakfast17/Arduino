@@ -46,10 +46,10 @@ int serial_close(Conn c) {
 
 int serial_read(Conn c) {
 	char buffer[BUFFER_SIZE];
+	memset(buffer, 0, BUFFER_SIZE);
 	DWORD length;
 	int result = !ReadFile(c.h, buffer, BUFFER_SIZE, &length, NULL);
 	if(result) return 1;
-	buffer[length] = 0;
 	return 0;
 }
 
@@ -71,5 +71,5 @@ int serial_write_profile(Conn c, Profile profile) {
 }
 
 void wait() {
-	Sleep(1000*10);
+	Sleep(1000*3);
 }

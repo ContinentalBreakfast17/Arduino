@@ -38,7 +38,7 @@ void loop() {
         analogWrite(i, vals[i-START_RGB_PIN]);
       }
     } else if(strcmp(buffer, "on") == 0) {
-        analogWrite(GC_PIN, HIGH);
+        analogWrite(GC_PIN, 255);
     } else if(strcmp(buffer, "off") == 0) {
         analogWrite(GC_PIN, LOW);
     }
