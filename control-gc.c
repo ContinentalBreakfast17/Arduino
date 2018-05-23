@@ -7,6 +7,7 @@
 void sigHandler(int);
 
 int main(void) {
+	hide_console();
 	Conn c = serial_init(getenv("SERIAL_PORT"), BAUD_RATE);
 	if(bad_init(c)) {
 		printf("Can't connect to serial device (startup)\n");

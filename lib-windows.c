@@ -73,3 +73,7 @@ int serial_write_profile(Conn c, Profile profile) {
 void wait() {
 	Sleep(1000*3);
 }
+
+void hide_console() {
+	ShowWindow(GetConsoleWindow(), SW_MINIMIZE);
+}

@@ -139,3 +139,7 @@ int serial_write_profile(Conn c, Profile profile) {
 void wait() {
     pause();
 }
+
+void hide_console() {
+    
+}

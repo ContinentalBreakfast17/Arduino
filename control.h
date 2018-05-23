@@ -32,6 +32,7 @@ typedef struct profile_tracker {
 	unsigned int 	current;
 } Profiles;
 
+void hide_console();
 Conn serial_init(char* serialport, int baud);
 int bad_init(Conn c);
 int serial_close(Conn c);
