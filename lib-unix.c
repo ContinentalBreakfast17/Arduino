@@ -100,11 +100,11 @@ int serial_close(Conn c)
     return close(c.fd);
 }
 
-// reads until newline or 128 characters
+// reads until newline or BUFFER_SIZE characters
 int serial_read(Conn c) {
-    char buffer[128];
+    char buffer[BUFFER_SIZE];
     int n = 0;
-    while(n < 128) {
+    while(n < BUFFER_SIZE) {
         int nread  = read(c.fd, buffer+n, 1);
         if(nread < 1)
             return 0;

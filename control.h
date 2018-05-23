@@ -1,17 +1,18 @@
-//
-// arduino-serial-lib -- simple library for reading/writing serial ports
-//
-// 2006-2013, Tod E. Kurt, http://todbot.com/blog/
-//
-
-
 #ifndef __CONTROL_H__
 #define __CONTROL_H__
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#define BUFFER_SZ 128
-#define STATIC 0
+#define READ_ERROR 		1
+#define INIT_ERROR 		2
+#define ADD_ERROR		3
+#define GET_LINE_ERROR 	4
+
+#define BUFFER_SIZE 	128
+#define BAUD_RATE		9600
+
+#define STATIC 			0
+
 
 typedef union connection {
 	int 			fd;

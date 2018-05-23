@@ -45,9 +45,9 @@ int serial_close(Conn c) {
 }
 
 int serial_read(Conn c) {
-	char buffer[BUFFER_SZ];
+	char buffer[BUFFER_SIZE];
 	DWORD length;
-	int result = !ReadFile(c.h, buffer, BUFFER_SZ, &length, NULL);
+	int result = !ReadFile(c.h, buffer, BUFFER_SIZE, &length, NULL);
 	if(result) return 1;
 	buffer[length] = 0;
 	return 0;

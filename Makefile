@@ -17,11 +17,16 @@ else
 endif
 
 
-all: control-rgb
+all: control-rgb control-gc rmo
 	
 control-rgb: control-rgb.o lib-$(LIB_SUFFIX).o
 	$(CC) -o $@$(EXE_SUFFIX) $^
-	$(RM) $^
+
+control-gc: control-gc.o lib-$(LIB_SUFFIX).o
+	$(CC) -o $@$(EXE_SUFFIX) $^
+
+rmo:
+	$(RM) $(RM_ARGS) *.o
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

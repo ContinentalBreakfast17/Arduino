@@ -5,13 +5,6 @@
 #include <time.h>
 #include "control.h"
 
-#define READ_ERROR 		1
-#define INIT_ERROR 		2
-#define ADD_ERROR		3
-#define GET_LINE_ERROR 	4
-#define SERIAL_PORT 	"COM3"
-#define BAUD_RATE		9600
-
 Profiles* read_profiles() {
 	// open profiles file
 	char* file = getenv("RGB_PROFILES");
@@ -139,7 +132,7 @@ int main(int argc, char** argv) {
 	Profiles* profiles = read_profiles();
 	if(profiles == NULL) exit(READ_ERROR);
 
-	Conn c = serial_init(SERIAL_PORT, BAUD_RATE);
+	Conn c = serial_init(getenv("SERIAL_PORT"), BAUD_RATE);
 	if(bad_init(c)) {
 		printf("Can't connect to serial device\n");
 		shutdown(profiles);
