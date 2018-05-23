@@ -12,6 +12,11 @@
 
 #define STATIC 0
 
+typedef union connection {
+	int 			fd;
+	void* 			h;
+} Conn;
+
 typedef struct profile_data {
 	unsigned char 	r;
 	unsigned char 	g;
@@ -25,10 +30,10 @@ typedef struct profile_tracker {
 	unsigned int 	current;
 } Profiles;
 
-int serial_init(char* serialport, int baud);
-int serial_close(int fd);
-int serial_write(int fd, char* str);
-int serial_write_profile(int fd, Profile profile);
-int serial_flush(int fd);
+Conn serial_init(char* serialport, int baud);
+int bad_init(Conn c);
+int serial_close(Conn c);
+int serial_write(Conn c, char* str);
+int serial_write_profile(Conn c, Profile profile);
 
 #endif

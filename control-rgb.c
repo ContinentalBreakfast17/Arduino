@@ -139,15 +139,15 @@ int main(int argc, char** argv) {
 	Profiles* profiles = read_profiles();
 	if(profiles == NULL) exit(READ_ERROR);
 
-	int fd = serial_init(SERIAL_PORT, BAUD_RATE);
-	if(fd == -1) {
+	Conn c = serial_init(SERIAL_PORT, BAUD_RATE);
+	if(bad_init(c)) {
 		printf("Can't connect to serial device\n");
 		shutdown(profiles);
 		return INIT_ERROR;
 	}
 
 	if(argc >= 2 && strcmp(argv[1], "init") == 0) {
-		check_arduino(serial_write_profile(fd, profiles->list[profiles->current]));
+		check_arduino(serial_write_profile(c, profiles->list[profiles->current]));
 		shutdown(profiles);
 		return 0;
 	}
@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
 			return error;
 		}
 
-		check_arduino(serial_write_profile(fd, profiles->list[profiles->current]));
+		check_arduino(serial_write_profile(c, profiles->list[profiles->current]));
 		printf("\n");
 	}
 

@@ -21,26 +21,27 @@
 // and a baud rate (bps) and connects to that port at that speed and 8N1.
 // opens the port in fully raw mode so you can send binary data.
 // returns valid fd, or -1 on error
-int serial_init(char* serialport, int baud)
+Conn serial_init(char* serialport, int baud)
 {
     struct termios toptions;
-    int fd;
+    Conn c, error;
+    error.fd = -1;
     
     //fd = open(serialport, O_RDWR | O_NOCTTY | O_NDELAY);
-    fd = open(serialport, O_RDWR | O_NONBLOCK );
+    c.fd = open(serialport, O_RDWR | O_NONBLOCK );
     
-    if(fd == -1)  {
+    if(c.fd == -1)  {
         perror("serial_init: Unable to open port ");
-        return -1;
+        return error;
     }
     
     //int iflags = TIOCM_DTR;
-    //ioctl(fd, TIOCMBIS, &iflags);     // turn on DTR
-    //ioctl(fd, TIOCMBIC, &iflags);    // turn off DTR
+    //ioctl(c.fd, TIOCMBIS, &iflags);     // turn on DTR
+    //ioctl(c.fd, TIOCMBIC, &iflags);    // turn off DTR
 
-    if(tcgetattr(fd, &toptions) < 0) {
+    if(tcgetattr(c.fd, &toptions) < 0) {
         perror("serial_init: Couldn't get term attributes");
-        return -1;
+        return error;
     }
     speed_t brate = baud; // let you override switch below if needed
     switch(baud) {
@@ -81,26 +82,30 @@ int serial_init(char* serialport, int baud)
     toptions.c_cc[VTIME] = 0;
     //toptions.c_cc[VTIME] = 20;
     
-    tcsetattr(fd, TCSANOW, &toptions);
-    if(tcsetattr(fd, TCSAFLUSH, &toptions) < 0) {
+    tcsetattr(c.fd, TCSANOW, &toptions);
+    if(tcsetattr(c.fd, TCSAFLUSH, &toptions) < 0) {
         perror("init_serial: Couldn't set term attributes");
-        return -1;
+        return error;
     }
 
-    return fd;
+    return c;
 }
 
-int serial_close(int fd)
+int bad_init(Conn c) {
+    return c.fd == -1;
+}
+
+int serial_close(Conn c)
 {
-    return close(fd);
+    return close(c.fd);
 }
 
 // reads until newline or 128 characters
-int serial_read(int fd) {
+int serial_read(Conn c) {
     char buffer[128];
     int n = 0;
     while(n < 128) {
-        int nread  = read(fd, buffer+n, 1);
+        int nread  = read(c.fd, buffer+n, 1);
         if(nread < 1)
             return 0;
         if(buffer[n] == '\n')
@@ -110,30 +115,23 @@ int serial_read(int fd) {
     return 1;
 }
 
-int serial_write(int fd, char* str)
+int serial_write(Conn c, char* str)
 {
     int len = strlen(str);
-    int n = write(fd, str, len);
+    int n = write(c.fd, str, len);
     if( n!=len ) {
         perror("serial_write: couldn't write whole string\n");
         return -1;
     }
-    if(n = serial_flush(fd)) return n;
-    return serial_read(fd);
+    return serial_read(c);
 }
 
-int serial_write_profile(int fd, Profile profile) {
+int serial_write_profile(Conn c, Profile profile) {
     if(profile.type == STATIC) {
         char buffer[16];
         memset(buffer, 0, 16);
         sprintf(buffer, "%d %hhu %hhu %hhu\n", STATIC, profile.r, profile.g, profile.b);
-        return serial_write(fd, buffer);
+        return serial_write(c, buffer);
     }
     return 0;
-}
-
-int serial_flush(int fd)
-{
-    sleep(2); //required to make flush work, for some reason
-    return tcflush(fd, TCIOFLUSH);
 }
