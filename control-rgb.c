@@ -185,6 +185,7 @@ int main(int argc, char** argv) {
 			edit_profile(&profiles->list[profiles->current]);
 		} else {
 			help();
+			continue;
 		}
 
 		if(error) {
