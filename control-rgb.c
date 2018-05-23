@@ -9,7 +9,7 @@
 #define INIT_ERROR 		2
 #define ADD_ERROR		3
 #define GET_LINE_ERROR 	4
-#define SERIAL_PORT 	"poop"
+#define SERIAL_PORT 	"COM3"
 #define BAUD_RATE		9600
 
 Profiles* read_profiles() {
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
 
 	Profile profile;
 	char* line = NULL;
-	long unsigned int line_size = 0;
+	size_t line_size = 0;
 	int quit = 0, error = 0, save = 0, n = 0;
 	while(!quit) {
 		if(save > 3) {
